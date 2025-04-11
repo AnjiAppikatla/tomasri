@@ -43,6 +43,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
+
   dashboard: boolean = true;
   transactions: boolean = false;
   agentspage: boolean = false;
@@ -55,21 +56,8 @@ export class DashboardComponent {
 
   type: string = 'dashboard';
 
-
-
-  constructor(
-    private sidenavService: SidenavService,
-  ) { }
-
-  ngOnInit() {
-    this.sidenavService.myVariable$.subscribe((value) => {
-      this.type = value;
-      this.onPageChange(value);
-    });
-  }
-
-  // Chart Data
-  public pieChartOptions: ChartConfiguration['options'] = {
+   // Chart Data
+   public pieChartOptions: ChartConfiguration['options'] = {
     responsive: true,
     plugins: {
       legend: {
@@ -95,6 +83,48 @@ export class DashboardComponent {
     }]
   };
 
+  agentSummary = [
+    {
+      name: 'John Doe',
+      email: 'john@example.com',
+      transactions: 5,
+      balance: 5500,
+      status: 'Active',
+      lastTransaction: new Date()
+    },
+    {
+      name: 'Sarah Smith',
+      email: 'sarah@example.com',
+      transactions: 3,
+      balance: 12000,
+      status: 'Active',
+      lastTransaction: new Date()
+    },
+    {
+      name: 'Michael Brown',
+      email: 'michael@example.com',
+      transactions: 1,
+      balance: 6000,
+      status: 'Inactive',
+      lastTransaction: new Date()
+    }
+  ];
+
+
+
+
+  constructor(
+    private sidenavService: SidenavService,
+  ) { }
+
+  ngOnInit() {
+    this.sidenavService.myVariable$.subscribe((value) => {
+      this.type = value;
+      this.onPageChange(value);
+    });
+  }
+
+ 
   onPageChange(type: string) {
     this.dashboard = false;
     this.transactions = false;
@@ -125,36 +155,20 @@ export class DashboardComponent {
     if(type == 'commissions'){
       this.commissions = true;
     }
+
+    console.log( this.dashboard,
+      this.transactions,
+      this.agentspage,
+      this.addAgnet,
+      this.services,
+      this.collections,
+      this.commissions,)
+
   }
 
   toggleSidenav() {
     this.showSidenav = !this.showSidenav;
   }
 
-  agentSummary = [
-    {
-      name: 'John Doe',
-      email: 'john@example.com',
-      transactions: 5,
-      balance: 5500,
-      status: 'Active',
-      lastTransaction: new Date()
-    },
-    {
-      name: 'Sarah Smith',
-      email: 'sarah@example.com',
-      transactions: 3,
-      balance: 12000,
-      status: 'Active',
-      lastTransaction: new Date()
-    },
-    {
-      name: 'Michael Brown',
-      email: 'michael@example.com',
-      transactions: 1,
-      balance: 6000,
-      status: 'Inactive',
-      lastTransaction: new Date()
-    }
-  ];
+
 }

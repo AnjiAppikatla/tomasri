@@ -11,7 +11,7 @@ import { CommissionsComponent } from './components/commissions/commissions.compo
 export const routes: Routes = [
     {path: '', component: LoginComponent},
     {path: 'dashboard', component: DashboardComponent},
-    {path: 'transactions', component: TransactionsComponent},
+    {path: 'Payments', component: TransactionsComponent},
     {path: 'agents', component: AgentsComponent},
     {path: 'add-agent', component: AddAgentComponent},
     {path: 'services', component: ServicesComponent},
