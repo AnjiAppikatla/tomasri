@@ -1,0 +1,63 @@
+
+<div class="min-h-screen p-6">
+  <div class="mx-auto max-w-3xl">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold text-gray-800">Add New Agent</h1>
+      <button mat-raised-button color="primary" routerLink="/agents">
+        <mat-icon>arrow_back</mat-icon>
+        Back to Agents
+      </button>
+    </div>
+
+    <mat-card class="shadow-lg rounded-xl">
+      <mat-card-content class="p-6">
+        <form #agentForm="ngForm" class="flex flex-col gap-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Name</mat-label>
+            <input matInput [(ngModel)]="newAgent.name" name="name" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Username</mat-label>
+            <input matInput [(ngModel)]="newAgent.username" name="username" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" [(ngModel)]="newAgent.password" name="password" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" [(ngModel)]="newAgent.email" name="email" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Phone</mat-label>
+            <input matInput [(ngModel)]="newAgent.phone" name="phone" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Branch</mat-label>
+            <mat-select [(ngModel)]="newAgent.branch" name="branch" required>
+              <mat-option value="Main Branch">Main Branch</mat-option>
+              <mat-option value="Downtown Branch">Downtown Branch</mat-option>
+              <mat-option value="West Branch">West Branch</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="flex justify-end gap-4 mt-6">
+            <button mat-button routerLink="/agents">
+              Cancel
+            </button>
+            <button mat-raised-button color="primary" 
+                    [disabled]="!agentForm.valid" 
+                    (click)="onSubmit(agentForm)">
+              Save Agent
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

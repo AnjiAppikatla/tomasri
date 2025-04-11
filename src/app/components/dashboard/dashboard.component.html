@@ -1,0 +1,164 @@
+<app-header (menuToggle)="toggleSidenav()"></app-header>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 px-0 side-nav-container" [class.d-none]="!showSidenav" [class.d-md-block]="true">
+            <app-sidenav></app-sidenav>
+        </div>
+        <div class="col-md-10 main-height">
+            <div class="p-3">
+
+                <div class="main-content"  *ngIf="dashboard == true">
+                    <div class="page-header">
+                        <h1 class="page-title">Dashboard</h1>
+                        <p class="user-role">Welcome back, Admin User (Admin)</p>
+                    </div>
+                
+                    <!-- Stats Cards -->
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <div class="card stat-card card-shadow">
+                                <div class="stat-card-label font-bold">Total Deposits</div>
+                                <div class="text-xl mt-2 text-green-500 font-bold">$24,500</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="card stat-card card-shadow">
+                                <div class="stat-card-label font-bold">Total Withdrawals</div>
+                                <div class="text-xl mt-2 text-red-500 font-bold">$7,500</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="card stat-card card-shadow">
+                                <div class="stat-card-label font-bold">Net Balance</div>
+                                <div class="text-xl mt-2 text-green-500 font-bold">$17,000</div>
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+                
+                    <!-- Charts Section -->
+                    <div class="row mt-2">
+                        <div class="col-md-6 mb-2">
+                            <div class="card card-shadow">
+                                <div class="card-body">
+                                    <h2 class="font-bold mb-4">Transactions (Last 7 Days)</h2>
+                                    <div style="height: 300px;">
+                                        <canvas baseChart
+                                            [type]="'pie'"
+                                            [data]="transactionChartData"
+                                            [options]="pieChartOptions">
+                                        </canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card card-shadow">
+                                <div class="card-body">
+                                    <h2 class="font-bold mb-4">Transaction Types</h2>
+                                    <div style="height: 300px;">
+                                        <canvas baseChart
+                                            [type]="'pie'"
+                                            [data]="typeChartData"
+                                            [options]="pieChartOptions">
+                                        </canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+                
+                    <!-- Agent Summary Accordion -->
+                    <div class="mt-4">
+                        <h2 class="text-xl font-bold mb-3">Agent Summary</h2>
+                        <mat-accordion class="dashboard-accordion">
+                            <mat-expansion-panel class="mb-3" *ngFor="let agent of agentSummary">
+                                <mat-expansion-panel-header class="py-3">
+                                    <mat-panel-title class="flex align-between md:items-center w-full gap-2">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-user-circle text-gray-600 mr-2"></i>
+                                            <span class="font-semibold">{{agent.name}}</span>
+                                        </div>
+                                        <div class="flex flex-wrap items-center gap-3">
+                                            <span class="text-sm text-gray-600">
+                                                <i class="fas fa-exchange-alt mr-1"></i>
+                                                {{agent.transactions}}
+                                            </span>
+                                            <span class="text-sm" [class.text-green-600]="agent.balance > 0" [class.text-red-600]="agent.balance < 0">
+                                                <i class="fas fa-wallet mr-1"></i>
+                                                ${{agent.balance}}
+                                            </span>
+                                            <!-- <span class="text-xs px-2 py-1 rounded-full" 
+                                                  [class.bg-green-100]="agent.status === 'Active'"
+                                                  [class.text-green-700]="agent.status === 'Active'"
+                                                  [class.bg-red-100]="agent.status === 'Inactive'"
+                                                  [class.text-red-700]="agent.status === 'Inactive'">
+                                                {{agent.status}}
+                                            </span> -->
+                                        </div>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                    
+                            <div class="pt-3">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="bg-gray-50 p-4 rounded-lg">
+                                        <h4 class="font-semibold mb-3 flex items-center">
+                                            <i class="fas fa-info-circle mr-2 text-blue-500"></i>
+                                            Contact Information
+                                        </h4>
+                                        <div class="space-y-2">
+                                            <p class="flex items-center">
+                                                <i class="fas fa-envelope mr-2 text-gray-500"></i>
+                                                {{agent.email}}
+                                            </p>
+                                            <p class="flex items-center">
+                                                <i class="fas fa-phone mr-2 text-gray-500"></i>
+                                                <!-- {{agent.phone || 'N/A'}} -->
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-gray-50 p-4 rounded-lg">
+                                        <h4 class="font-semibold mb-3 flex items-center">
+                                            <i class="fas fa-history mr-2 text-blue-500"></i>
+                                            Recent Activity
+                                        </h4>
+                                        <div class="space-y-2">
+                                            <p class="flex items-center">
+                                                <i class="fas fa-calendar-alt mr-2 text-gray-500"></i>
+                                                Last active: {{agent.lastTransaction | date:'medium'}}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+
+                <div *ngIf="transactions == true">
+                    <app-transactions />
+                </div>
+                <div *ngIf="agentspage == true">
+                    <app-agents />
+                </div>
+                <div *ngIf="addAgnet == true">
+                    <app-add-agent />
+                </div>
+                <div *ngIf="services == true">
+                    <app-services />
+                </div>
+                <div *ngIf="collections == true">
+                    <app-collections />
+                </div>
+                <div *ngIf="commissions == true">
+                    <app-commissions />
+                </div>
+
+            </div>
+            
+        </div>
+    </div>
+</div>

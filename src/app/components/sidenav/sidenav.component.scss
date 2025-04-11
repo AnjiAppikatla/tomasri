@@ -1,0 +1,16 @@
+.side-nav {
+  .side-nav-list {
+    padding: 10px;
+    font-size: 15px;
+    color: rgb(235, 235, 235);
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      cursor: pointer;
+    }
+    &.active {
+      background: linear-gradient(45deg, #913da9, #51215eb8);
+      color: #fff;
+    }
+  }
+}

@@ -1,0 +1,11 @@
+<div class="side-nav">
+    <!-- <h1 class="text-white pl-3 mt-4">Tomasri</h1> -->
+    <ul class="side-nav px-0">
+        <li class="side-nav-list active" [class.active]="activepage === 'dashboard'" (click)="pageChange('dashboard')"><i class="fas fa-home mr-3"></i>Dashboard</li>
+        <li class="side-nav-list" [class.active]="activepage === 'Payments'" (click)="pageChange('Payments')"><i class="fas fa-chart-bar mr-3"></i>Payments</li>
+        <li class="side-nav-list" [class.active]="activepage === 'collections'" (click)="pageChange('collections')"><i class="fas fa-boxes mr-3"></i>Collection</li>
+        <li class="side-nav-list" [class.active]="activepage === 'agents'" (click)="pageChange('agents')"><i class="fas fa-users mr-3"></i>Agents</li>
+        <li class="side-nav-list" [class.active]="activepage === 'commissions'" (click)="pageChange('commissions')"><i class="fas fa-calculator mr-3"></i>Commissions</li>
+        <li class="side-nav-list" [class.active]="activepage === 'services'" (click)="pageChange('services')"><i class="fas fa-tools mr-3"></i> Services</li>
+    </ul>
+</div>

@@ -1,0 +1,122 @@
+<div class="min-h-screen">
+  <div class="mx-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold text-gray-800">Agents Management</h1>
+      <button mat-raised-button color="primary" (click)="openNewAgentDialog()" class="px-4 py-2">
+        <mat-icon>add</mat-icon>
+        New Agent
+      </button>
+    </div>
+
+    <mat-card class="shadow-lg rounded-xl">
+      <mat-card-content class="p-6">
+        <table mat-table [dataSource]="agents" class="w-full">
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>ID</th>
+            <td mat-cell *matCellDef="let agent">{{agent.id}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let agent">{{agent.name}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef>Username</th>
+            <td mat-cell *matCellDef="let agent">{{agent.username}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let agent">{{agent.email}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="phone">
+            <th mat-header-cell *matHeaderCellDef>Phone</th>
+            <td mat-cell *matCellDef="let agent">{{agent.phone}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="branch">
+            <th mat-header-cell *matHeaderCellDef>Branch</th>
+            <td mat-cell *matCellDef="let agent">{{agent.branch}}</td>
+          </ng-container>
+
+     
+
+          <ng-container matColumnDef="joinDate">
+            <th mat-header-cell *matHeaderCellDef>Join Date</th>
+            <td mat-cell *matCellDef="let agent">{{agent.joinDate | date}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let agent">
+              <button mat-icon-button color="primary" (click)="openNewAgentDialog(agent)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <!-- <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator> -->
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+
+
+<ng-template #agentDialog>
+    <h2 mat-dialog-title>{{isEditing ? 'Edit Agent' : 'Add New Agent'}}</h2>
+    <mat-dialog-content>
+      <form #agentForm="ngForm" class="flex flex-col gap-4">
+        <mat-form-field appearance="fill">
+          <mat-label>Name</mat-label>
+          <input matInput [(ngModel)]="newAgent.name" name="name" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Username</mat-label>
+          <input matInput [(ngModel)]="newAgent.username" name="username" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" [(ngModel)]="newAgent.password" name="password" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" [(ngModel)]="newAgent.email" name="email" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Phone</mat-label>
+          <input matInput [(ngModel)]="newAgent.phone" name="phone" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Branch</mat-label>
+          <mat-select [(ngModel)]="newAgent.branch" name="branch" required>
+            <mat-option value="Main Branch">Main Branch</mat-option>
+            <mat-option value="Downtown Branch">Downtown Branch</mat-option>
+            <mat-option value="West Branch">West Branch</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="closeDialog()">Cancel</button>
+      <button mat-raised-button color="primary" 
+              [disabled]="!agentForm.valid" 
+              (click)="addOrUpdateAgent(agentForm)">
+        {{isEditing ? 'Update' : 'Add'}} Agent
+      </button>
+    </mat-dialog-actions>
+  </ng-template>

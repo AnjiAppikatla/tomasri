@@ -1,0 +1,45 @@
+<!-- Mobile View -->
+<div class="mobile-container d-block d-md-none">
+  <mat-toolbar class="header-toolbar">
+    <button mat-icon-button class="menu-button" (click)="toggleMenu()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div class="header-content">
+      <div class="brand flex">
+        <h1 class="mb-0">Tomasri</h1>
+        <span class="subtitle pl-5">Digital Payments</span>
+      </div>
+    </div>
+  </mat-toolbar>
+
+  <div class="mobile-sidebar" *ngIf="mobileSidebar">
+    <app-sidenav ></app-sidenav>
+  </div>
+
+  <!-- <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="over" class="mobile-sidenav">
+      <app-sidenav></app-sidenav>
+    </mat-sidenav>
+    
+    <mat-sidenav-content>
+      <div class="mobile-content">
+        <ng-content>
+        
+        </ng-content>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container> -->
+ 
+
+
+</div>
+
+<!-- Desktop View -->
+<mat-toolbar class="header-toolbar d-none d-md-flex">
+  <div class="header-content">
+    <div class="brand flex">
+      <h1 class="mb-0">Tomasri</h1>
+      <span class="subtitle pl-5">Digital Payments</span>
+    </div>
+  </div>
+</mat-toolbar>

@@ -30,7 +30,13 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "@angular/material/prebuilt-themes/indigo-pink.css",
+              "src/styles.scss",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              {
+                "input": "node_modules/bootstrap/dist/css/bootstrap.min.css",
+                "inject": true
+              }
             ],
             "scripts": []
           },
@@ -48,7 +54,23 @@
                   "maximumError": "4kb"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "github-pages": {
+                "budgets": [
+                  {
+                    "type": "initial",
+                    "maximumWarning": "500kb",
+                    "maximumError": "1mb"
+                  },
+                  {
+                    "type": "anyComponentStyle",
+                    "maximumWarning": "2kb",
+                    "maximumError": "4kb"
+                  }
+                ],
+                "outputHashing": "all",
+                "baseHref": "/tomasri/"
+              }
             },
             "development": {
               "optimization": false,
@@ -90,12 +112,21 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "@angular/material/prebuilt-themes/indigo-pink.css",
+              "src/styles.scss",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              {
+                "input": "node_modules/bootstrap/dist/css/bootstrap.min.css",
+                "inject": true
+              }
             ],
             "scripts": []
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
