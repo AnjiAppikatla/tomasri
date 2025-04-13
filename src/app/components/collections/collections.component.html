@@ -9,7 +9,7 @@
               <h2 class="text-xl font-semibold">Collections Overview</h2>
               <div class="flex items-center gap-4">
                 <mat-form-field appearance="outline" class="w-32">
-                  <mat-select [(ngModel)]="selectedType" (selectionChange)="onTypeChange($event.value)">
+                  <mat-select [formControl]="selectedTypeFc" (selectionChange)="onTypeChange($event.value)">
                     <mat-option *ngFor="let type of collectionTypes" [value]="type">
                       {{type}}
                     </mat-option>
@@ -124,12 +124,12 @@
             <!-- Total Amount -->
           <mat-form-field class="w-100 md:grid-cols-2">
             <mat-label>Total Amount</mat-label>
-            <input matInput type="number" formControlName="totalAmount" (input)="updateAmounts()" required>
+            <input matInput type="number" formControlName="totalAmount" required>
           </mat-form-field>
 
           <mat-form-field class="w-100 md:grid-cols-2">
             <mat-label>Total in Cash</mat-label>
-            <input matInput type="number" formControlName="cashAmount" (input)="updateAmounts()" readonly>
+            <input matInput type="number" formControlName="cashAmount" readonly>
           </mat-form-field>
           </ng-container>
     
@@ -152,6 +152,18 @@
               <mat-label>Amount in Online</mat-label>
               <input matInput type="number" formControlName="onlineAmount">
             </mat-form-field>
+
+            <!-- Online type Name -->
+            <mat-form-field class="w-100">
+              <mat-label>A/c Name</mat-label>
+              <input matInput type="text" formControlName="accountName">
+            </mat-form-field>
+
+            <!-- Online Mobile Number -->
+            <mat-form-field class="w-100">
+              <mat-label>Mobile Number</mat-label>
+              <input matInput type="text" formControlName="mobileNumber">
+            </mat-form-field>
         </ng-container>
     
           <!-- Cash Denominations -->
@@ -159,11 +171,7 @@
             <h3 class="mb-3">Cash Denominations</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     
-              <mat-form-field>
-                <mat-label>₹2000 Notes</mat-label>
-                <input matInput type="number" formControlName="denomination2000" (input)="updateCashAmount()">
-              </mat-form-field>
-    
+
               <mat-form-field>
                 <mat-label>₹500 Notes</mat-label>
                 <input matInput type="number" formControlName="denomination500" (input)="updateCashAmount()">
@@ -215,29 +223,12 @@
             </div>
           </div>
     
-          <!-- Payment Summary Section -->
-          <div class="col-span-1 md:col-span-2 p-4 bg-gray-50 rounded-lg">
-            <h3 class="text-lg font-semibold mb-3">Collection Summary</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div class="border-r pr-4">
-                <p class="text-gray-600">Cash Total</p>
-                <p class="text-xl font-bold">₹{{ getCashTotal() | number }}</p>
-              </div>
-              <div class="border-r pr-4">
-                <p class="text-gray-600">Online Total</p>
-                <p class="text-xl font-bold">₹{{ getOnlineTotal() | number }}</p>
-              </div>
-              <div>
-                <p class="text-gray-600">Total Collection</p>
-                <p class="text-xl font-bold text-green-600">₹{{ getTotalAmount() | number }}</p>
-              </div>
-            </div>
-          </div>
+        
     
         </form>
       </mat-dialog-content>
-      <mat-dialog-actions align="end">
-        <button mat-button (click)="closeDialog()">Cancel</button>
+      <mat-dialog-actions align="center">
+        <button mat-raised-button color="white" (click)="closeDialog()">Cancel</button>
         <button mat-raised-button color="primary" (click)="saveCollection()">
           Save
         </button>

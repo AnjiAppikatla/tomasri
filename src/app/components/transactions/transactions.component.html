@@ -34,7 +34,7 @@
     </div>
 
     <!-- Transaction Form -->
-    <mat-card *ngIf="showForm" class="mb-6">
+    <!-- <mat-card *ngIf="showForm" class="mb-6">
       <mat-card-content>
         <form (ngSubmit)="onSubmit()" class="grid grid-cols-2 gap-4">
           <mat-form-field>
@@ -53,10 +53,7 @@
             </mat-select>
           </mat-form-field>
 
-          <!-- <mat-form-field>
-            <mat-label>Customer Name</mat-label>
-            <input matInput [(ngModel)]="customerName" name="customerName" required>
-          </mat-form-field> -->
+         
 
           <mat-form-field>
             <mat-label>Payment Type</mat-label>
@@ -78,7 +75,7 @@
           </div>
         </form>
       </mat-card-content>
-    </mat-card>
+    </mat-card> -->
 
     <!-- Agents Accordion -->
     <mat-accordion>
@@ -95,22 +92,17 @@
         <!-- Transaction List -->
         <div class="mt-4">
           <div class="grid grid-cols-1 gap-4">
-            <div *ngFor="let transaction of agent.transactions" 
-                 class="border rounded-lg p-4 hover:bg-gray-50">
+            <div *ngFor="let transaction of agent.transactions" class="border rounded-lg p-4 hover:bg-gray-50">
               <div class="flex justify-between items-center">
                 <div>
                   <p class="text-sm text-gray-600">{{transaction.date | date:'mediumDate'}}</p>
-                  <p class="font-medium">{{transaction.customerName}}</p>
-                  <p class="text-sm">Ref: {{transaction.reference}}</p>
+                  <p class="font-medium">{{transaction.clientName}}</p>
                 </div>
                 <div class="text-right">
                   <p class="font-bold">${{transaction.amount | number:'1.2-2'}}</p>
-                  <p [class]="getPaymentTypeClass(transaction.type)" class="font-medium">
-                    {{transaction.type}}
+                  <p [class]="getPaymentTypeClass(transaction.paymentType)" class="font-medium">
+                    {{transaction.paymentType}}
                   </p>
-                  <span [class]="transaction.status === 'Completed' ? 'text-green-600' : 'text-orange-500'">
-                    {{transaction.status}}
-                  </span>
                 </div>
               </div>
             </div>
@@ -124,17 +116,17 @@
 <ng-template #transactionDialog>
   <h2 mat-dialog-title>New Payment</h2>
   <mat-dialog-content>
-    <form [formGroup]="transactionForm" ngForm="transactionFormNew" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form [formGroup]="transactionForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <mat-form-field>
         <mat-label>Select Agent</mat-label>
         <mat-select formControlName="agent">
-          <mat-option *ngFor="let agent of agents" [value]="agent">{{agent.name}}</mat-option>
+          <mat-option *ngFor="let agent of agentsData" [value]="agent.name">{{agent.name}}</mat-option>
         </mat-select>
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>Select Client</mat-label>
-        <mat-select formControlName="customerName">
+        <mat-select formControlName="clientName">
           <mat-option *ngFor="let data of clientsData" [value]="data.id">{{data.name}}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -152,7 +144,7 @@
         <input matInput type="number" formControlName="amount">
       </mat-form-field>
 
-    <div>
+      <div>
         <!-- Bank dropdown if type is Online -->
         <mat-form-field *ngIf="transactionForm.get('type')?.value === 'bank'" class="w-100">
           <mat-label>Select Bank</mat-label>
@@ -160,35 +152,34 @@
             <mat-option *ngFor="let bank of bankNames" [value]="bank">{{ bank }}</mat-option>
           </mat-select>
         </mat-form-field>
-    </div>
-      
-     
+      </div>
+
+
 
       <!-- Denominations if type is CDM -->
-   
-        <div>
-          <h3 class="text-lg font-semibold mb-2">Denominations</h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+
+      <!-- ... existing code ... -->
+      <div *ngIf="transactionForm.get('type')?.value === 'cdm'">
+        <h3 class="text-lg font-semibold mb-2">Denominations</h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
           <mat-form-field *ngFor="let denom of denominations">
             <mat-label>₹{{ denom }}</mat-label>
-            <input matInput type="number" formControlName="denomination{{denom}}" >
-            <mat-hint>Total: ₹</mat-hint>
+            <input matInput type="number" [formControlName]="'denomination' + denom" (input)="calculateTotal()" min="0">
           </mat-form-field>
         </div>
-        <div class="text-right text-lg font-bold mt-2">
-          Total: ₹
-          <!-- {{ totalDenomination | number }} -->
+        <div class="text-right mt-2">
+          <p class="text-lg font-semibold">Total: ₹{{ denominationTotal }}</p>
         </div>
       </div>
-      
+      <!-- ... existing code ... -->
+
     </form>
   </mat-dialog-content>
 
-  <mat-dialog-actions align="end">
-    <button mat-button (click)="closeDialog()">Cancel</button>
+  <mat-dialog-actions align="center">
+    <button mat-raised-button color="white" (click)="closeDialog()">Cancel</button>
     <button mat-raised-button color="primary" (click)="saveTransaction()">
       Save
     </button>
   </mat-dialog-actions>
 </ng-template>
-

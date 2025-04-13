@@ -16,24 +16,23 @@ import { ReactiveFormsModule } from '@angular/forms';
 // Update the Collection interface to include time
 interface Collection {
 
-  collectionType : string,
-      clientName : string,
-      totalAmount : 0,
-      cashAmount : 0,
-      onlineAmount : 0,
-      onlineType : '',
+  collectionType: string,
+  clientName: string,
+  totalAmount: 0,
+  cashAmount: 0,
+  onlineAmount: 0,
+  onlineType: '',
   date: Date;
-  time?: string; 
-  denomination2000 : string,
-  denomination500 : string,
-  denomination200 : string,
-  denomination100 : string,
-  denomination50 : string,
-  denomination20 : string,
-  denomination10 : string,
-  denomination5 : string,
-  denomination2 : string,
-  denomination1 : string
+  time?: string;
+  denomination500: string,
+  denomination200: string,
+  denomination100: string,
+  denomination50: string,
+  denomination20: string,
+  denomination10: string,
+  denomination5: string,
+  denomination2: string,
+  denomination1: string
 }
 
 @Component({
@@ -62,13 +61,15 @@ export class CollectionsComponent implements OnInit {
   constructor(private dialog: MatDialog, private fb: FormBuilder) { }
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
-  selectedType: string = 'All';
+  
   collectionTypes = ['All', 'Cash', 'Online'];
 
   collectionTypesTotal = [
     { name: 'Cash', value: 0 },
     { name: 'Online', value: 0 }
   ];
+
+  selectedTypeFc = new FormControl('All')
 
   collectionTotalAmount: number = 0;
 
@@ -121,7 +122,8 @@ export class CollectionsComponent implements OnInit {
       cashAmount: new FormControl('', Validators.required),
       onlineAmount: new FormControl('', Validators.required),
       onlineType: new FormControl('', Validators.required),
-      denomination2000: new FormControl('', Validators.required),
+      accountName: new FormControl('', Validators.required),
+      mobileNumber: new FormControl('', Validators.required),
       denomination500: new FormControl('', Validators.required),
       denomination200: new FormControl('', Validators.required),
       denomination100: new FormControl('', Validators.required),
@@ -135,7 +137,7 @@ export class CollectionsComponent implements OnInit {
   }
 
   onTypeChange(type: string) {
-    this.selectedType = type;
+    this.selectedTypeFc.setValue(type);
     this.updateChartData();
   }
 
@@ -157,11 +159,28 @@ export class CollectionsComponent implements OnInit {
   }
 
   private updateChartData() {
-    const filteredData = this.selectedType === 'All'
-      ? this.collections
-      : this.collections.filter(c => c.collectionType === this.selectedType);
-
-    this.barChartData.datasets[0].data = filteredData.map(c => c.totalAmount);
+    let filteredData = this.collections;
+    
+    if (this.selectedTypeFc.value !== 'All') {
+      filteredData = this.collections.filter(c => {
+        if (this.selectedTypeFc.value === 'Cash') {
+          return c.cashAmount > 0;
+        } else if (this.selectedTypeFc.value === 'Online') {
+          return c.onlineAmount > 0;
+        }
+        return c.collectionType === this.selectedTypeFc.value;
+      });
+    }
+  
+    this.barChartData.datasets[0].data = filteredData.map(c => {
+      if (this.selectedTypeFc.value === 'Cash') {
+        return c.cashAmount;
+      } else if (this.selectedTypeFc.value === 'Online') {
+        return c.onlineAmount;
+      }
+      return c.totalAmount;
+    });
+    
     this.chart?.update();
   }
 
@@ -176,13 +195,13 @@ export class CollectionsComponent implements OnInit {
     // Reset totals before calculating
     this.totalCash = 0;
     this.totalOnlineCash = 0;
-    
+
     // Calculate totals with number conversion
     this.collections.forEach(x => {
       this.totalCash += Number(x.cashAmount) || 0;
       this.totalOnlineCash += Number(x.onlineAmount) || 0;
     });
-  
+
     // Update collection types total
     this.collectionTypesTotal.forEach(y => {
       if (y.name === 'Cash') {
@@ -190,12 +209,12 @@ export class CollectionsComponent implements OnInit {
       }
       else if (y.name === 'Online') {
         y.value = this.totalOnlineCash;
-      }     
+      }
     });
-  
+
     // Calculate total amount
     this.collectionTotalAmount = Number(this.totalCash) + Number(this.totalOnlineCash);
-    
+
     return this.collectionTotalAmount;
   }
 
@@ -223,24 +242,23 @@ export class CollectionsComponent implements OnInit {
 
   // Update initial newCollection
   newCollection: Collection = {
-    collectionType : '',
-    clientName : '',
-    totalAmount : 0,
-    cashAmount : 0,
-    onlineAmount : 0,
-    onlineType : '',
-date: new Date,
-time: new Date().toLocaleTimeString(), 
-denomination2000 : '',
-denomination500 : '',
-denomination200 : '',
-denomination100 : '',
-denomination50 : '',
-denomination20 : '',
-denomination10 : '',
-denomination5 : '',
-denomination2 : '',
-denomination1 : ''
+    collectionType: '',
+    clientName: '',
+    totalAmount: 0,
+    cashAmount: 0,
+    onlineAmount: 0,
+    onlineType: '',
+    date: new Date,
+    time: new Date().toLocaleTimeString(),
+    denomination500: '',
+    denomination200: '',
+    denomination100: '',
+    denomination50: '',
+    denomination20: '',
+    denomination10: '',
+    denomination5: '',
+    denomination2: '',
+    denomination1: ''
   };
 
   showNewCollectionForm() {
@@ -251,36 +269,29 @@ denomination1 : ''
   }
 
   closeDialog() {
-    this.dialog.closeAll();
     this.resetForm();
+    this.dialog.closeAll();
   }
 
-  saveCollection() {
-    // const collection: Collection = {
-    //   ...this.newCollection,
-    //   date: new Date(),
-    //   time: new Date().toLocaleTimeString(),
-    //   denominations: this.newCollection.type === 'Cash' ? this.selectedDenominations : undefined
-    // };
-    // this.collections.unshift(collection);
+  saveCollection() { 
 
-    const obj = Object.assign({}) 
-      obj.type = this.collectionGrop.controls['collectionType'].value,
-      
-     
+    const obj = Object.assign({})
+    obj.type = this.collectionGrop.controls['collectionType'].value,
+
+
       obj.date = new Date(),
+      obj.time = new Date().toLocaleTimeString(),
       obj.clientName = this.collectionGrop.controls['clientName'].value,
       // obj.agentName = this.collectionGrop.controls['agentName'].value,
       obj.denominations = {}
-    
 
-    if(this.collectionGrop.controls['collectionType'].value == 'Cash' || this.collectionGrop.controls['collectionType'].value == 'cash&online') {
-      obj.totalAmount = this.collectionGrop.controls['totalAmount'].value + this.collectionGrop.controls['onlineAmount'].value,
-      obj.cashAmount = this.collectionGrop.controls['cashAmount'].value
 
-        const obj2 = Object.assign({});
-        obj2.twoThosand = this.collectionGrop.controls['denomination2000'].value,
-        obj2.fiveHundred = this.collectionGrop.controls['denomination500'].value,
+    if (this.collectionGrop.controls['collectionType'].value == 'Cash') {      
+        obj.cashAmount = this.collectionGrop.controls['cashAmount'].value,
+        obj.totalAmount = this.collectionGrop.controls['cashAmount'].value
+
+      const obj2 = Object.assign({});
+      obj2.fiveHundred = this.collectionGrop.controls['denomination500'].value,
         obj2.twoHundred = this.collectionGrop.controls['denomination200'].value,
         obj2.oneHundred = this.collectionGrop.controls['denomination100'].value,
         obj2.fifty = this.collectionGrop.controls['denomination50'].value,
@@ -288,25 +299,28 @@ denomination1 : ''
         obj2.ten = this.collectionGrop.controls['denomination10'].value,
         obj2.five = this.collectionGrop.controls['denomination5'].value,
         obj2.two = this.collectionGrop.controls['denomination2'].value
-        obj2.one = this.collectionGrop.controls['denomination1'].value
+      obj2.one = this.collectionGrop.controls['denomination1'].value
 
-        obj.denominations = obj2
+      obj.denominations = obj2
     }
 
-      if(this.collectionGrop.controls['collectionType'].value == 'Online') {
-        obj.totalAmount = this.collectionGrop.controls['onlineAmount'].value,
+    if(this.collectionGrop.controls['collectionType'].value == 'cash&online'){
+      obj.totalAmount = this.collectionGrop.controls['cashAmount'].value + this.collectionGrop.controls['onlineAmount'].value,
+      obj.onlineAmount = this.collectionGrop.controls['onlineAmount'].value,
+      obj.cashAmount = this.collectionGrop.controls['cashAmount'].value
+    }
+
+    if (this.collectionGrop.controls['collectionType'].value == 'Online') {
+      obj.totalAmount = this.collectionGrop.controls['onlineAmount'].value,
         obj.onlineAmount = this.collectionGrop.controls['onlineAmount'].value,
-        obj.onlineType = this.collectionGrop.controls['onlineType'].value
-      }
-    
-      this.collections.push(obj);
+        obj.onlineType = this.collectionGrop.controls['onlineType'].value,
+        obj.accountName = this.collectionGrop.controls['accountName'].value,
+        obj.mobileNumber = this.collectionGrop.controls['mobileNumber'].value
+    }
 
-      console.log(obj);
-      console.log(this.collections);
+    this.collections.push(obj);
 
-      this.getTotalCollections();
-
-
+    this.getTotalCollections();
 
     this.closeDialog();
     this.updateChartData();
@@ -316,27 +330,10 @@ denomination1 : ''
   // Add resetForm method
   // Update resetForm method
   resetForm() {
-    this.newCollection = {
-      collectionType : '',
-    clientName : '',
-    totalAmount : 0,
-    cashAmount : 0,
-    onlineAmount : 0,
-    onlineType : '',
-date: new Date,
-time: new Date().toLocaleTimeString(), 
-denomination2000 : '',
-denomination500 : '',
-denomination200 : '',
-denomination100 : '',
-denomination50 : '',
-denomination20 : '',
-denomination10 : '',
-denomination5 : '',
-denomination2 : '',
-denomination1 : ''
-    };
+    this.collectionGrop.reset();
     this.selectedDenominations = {};
+    this.cashAmountRow = false;
+    this.onlineAmountRow = false;
   }
 
   getUniqueClients(): string[] {
@@ -356,7 +353,6 @@ denomination1 : ''
   // Add to your component class
   updateCashAmount() {
     const denominations = {
-      2000: this.collectionGrop.get('denomination2000')?.value || 0,
       500: this.collectionGrop.get('denomination500')?.value || 0,
       200: this.collectionGrop.get('denomination200')?.value || 0,
       100: this.collectionGrop.get('denomination100')?.value || 0,
@@ -375,7 +371,7 @@ denomination1 : ''
       cashAmount: total
     }, { emitEvent: false });
 
-    this.updateAmounts();
+    // this.updateAmounts();
   }
 
   validateNumber(event: any) {
@@ -412,11 +408,11 @@ denomination1 : ''
   updateAmounts() {
     const totalAmount = this.collectionGrop.get('totalAmount')?.value || 0;
     const cashAmount = this.collectionGrop.get('cashAmount')?.value || 0;
-    const onlineAmount = totalAmount - cashAmount;
+    // const onlineAmount = totalAmount - cashAmount;
 
-    this.collectionGrop.patchValue({
-      onlineAmount: onlineAmount >= 0 ? onlineAmount : 0
-    }, { emitEvent: false });
+    // this.collectionGrop.patchValue({
+    //   onlineAmount: onlineAmount >= 0 ? onlineAmount : 0
+    // }, { emitEvent: false });
   }
 
   isValidTotal(): boolean {
